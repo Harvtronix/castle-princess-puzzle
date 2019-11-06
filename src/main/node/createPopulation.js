@@ -1,11 +1,15 @@
 const fs = require('fs')
 
-const {createPopulation} = require('./Genetics')
+const {createCells} = require('./Genetics')
 
-const createPopulationExternal = (numCells) => {
-    const population = createPopulation(numCells)
+const createPopulation = (numCells) => {
+    const cells = createCells(numCells)
+    const population = {
+        generation: 1,
+        cells
+    }
 
     fs.writeFileSync('./files/population.json', JSON.stringify(population, null, 2))
 }
 
-module.exports = createPopulationExternal
+module.exports = createPopulation

@@ -1,13 +1,14 @@
-const createSubFunction = (lookAtGuess) => {
+const createSubFunction = () => {
     return {
-        lookAtGuess,
+        defaultGuess: 0,
+        lookAtGuess: 0,
         map: {},
-        defaultGuess: 0
     }
 }
 
 // Example cell
 const cell = {
+    defaultGuess: 0,
     lookAtGuess: 0,
     map: {
         0: {

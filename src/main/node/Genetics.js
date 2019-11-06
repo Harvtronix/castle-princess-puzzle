@@ -18,9 +18,9 @@ const getSubFunctions = (cell) => {
 }
 
 const shouldMutate = () => {
-    const rarity = 100
+    const rarity = 2
 
-    return Math.floor(Math.random() * rarity) === 0
+    return Math.floor(Math.random() * 100) < rarity
 }
 
 const mutate = (cell) => {
@@ -133,20 +133,19 @@ const mutateChangeDefaultGuess = (cell) => {
 }
 
 const MUTATIONS = Object.freeze({
-    ADD_OUTPUT: mutateAddOutput,
+    // ADD_OUTPUT: mutateAddOutput,
     ADD_SUB_FUNCTION: mutateAddSubFunction,
     // REMOVE_MAPPING: mutateRemoveMapping,
     CHANGE_LOOK_AT_GUESS: mutateChangeLookAtGuess,
     CHANGE_DEFAULT_GUESS: mutateChangeDefaultGuess
 })
 
-const createPopulation = (numCells) => {
+const createCells = (numCells) => {
     const population = []
 
     for (let i=0; i< numCells; i++) {
-        // Each cell is initialized with a random lookAtGuess in their initial subFunction
-        let lookAtGuess = Math.floor(Math.random() * MAX_GUESSES)
-        let cell = createSubFunction(lookAtGuess)
+        // Each cell is initialized with a "0" as the lookAtGuess in their initial subFunction
+        let cell = createSubFunction()
         population.push(cell)
     }
 
@@ -185,6 +184,6 @@ const divide = (cell) => {
 }
 
 module.exports = {
-    createPopulation,
+    createCells,
     divide
 }

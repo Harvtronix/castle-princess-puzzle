@@ -12,7 +12,7 @@ const runSimulation = (numGames) => {
     let cumulativeResults = []
 
     // For each cell in the population, let it run for a bunch of games
-    for (let cell of population) {
+    for (let cell of population.cells) {
 
         let results = []
 
@@ -20,22 +20,21 @@ const runSimulation = (numGames) => {
             let g = new Game()
             while (g.isRunning) {
                 g.guessRoom(neuralStrategy(g, cell))
-                // g.guessRoom(randomStrategy(g))
             }
 
-            results.push(MAX_GUESSES - g.guesses.length)
+            results.push(g.guesses.length)
         }
 
-        const averageFitness = results.reduce((prev, cur) => (prev + cur)) / results.length
-        cell.averageFitness = averageFitness
+        cell.averageFitness = results.reduce((prev, cur) => (prev + cur)) / results.length
 
         cumulativeResults.push(cell)
     }
 
-    cumulativeResults = cumulativeResults.sort((a, b) => b.averageFitness - a.averageFitness)
+    cumulativeResults = cumulativeResults.sort((a, b) => a.averageFitness - b.averageFitness)
+    population.cells = cumulativeResults
 
     // Write out the sorted population to the file
-    fs.writeFileSync('./files/population.json', JSON.stringify(cumulativeResults, null, 2))
+    fs.writeFileSync('./files/population.json', JSON.stringify(population, null, 2))
 }
 
 module.exports = runSimulation
