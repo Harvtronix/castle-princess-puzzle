@@ -9,7 +9,7 @@ import AI from '../modules/AI'
 
 const initialState = {
     previousChoices: [],
-    doorStates: [false, false, false, false],
+    doorStates: [false, false, false, false, false],
     won: false,
     fitnessValues: []
 }
@@ -26,26 +26,26 @@ const Main = () => {
     const [doorState, dispatch] = useReducer(doorReducer, initialState)
     const [aiInterval, setAiInterval] = useState(null)
 
-    useEffect(() => {
-        if (!doorState.won) {
-            const interval = setInterval(
-                () => AI.play(doorState, log, dispatch),
-                STEP
-            )
-            setAiInterval(interval)
-        } else {
-            clearInterval(aiInterval)
-            if (doorState.fitnessValues.length < ROUNDS) {
-                dispatch({
-                    type: DoorActions.RESET,
-                    payload: {log}
-                })
-            }
-        }
+    // useEffect(() => {
+    //     if (!doorState.won) {
+    //         const interval = setInterval(
+    //             () => AI.play(doorState, log, dispatch),
+    //             STEP
+    //         )
+    //         setAiInterval(interval)
+    //     } else {
+    //         clearInterval(aiInterval)
+    //         if (doorState.fitnessValues.length < ROUNDS) {
+    //             dispatch({
+    //                 type: DoorActions.RESET,
+    //                 payload: {log}
+    //             })
+    //         }
+    //     }
 
-        return () => {aiInterval && clearInterval(aiInterval)}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [doorState.won])
+    //     return () => {aiInterval && clearInterval(aiInterval)}
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [doorState.won])
 
     const castleProps = {
         doorStates: doorState.doorStates,

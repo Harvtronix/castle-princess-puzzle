@@ -1,0 +1,9 @@
+module.exports = {
+    MAX_GUESSES: 10,
+    MUTATION_RATE: 10,
+    NUM_CELLS: 100000,
+    NUM_GAMES: 10000,
+    NUM_GENERATIONS: 50,
+    NUM_ROOMS: 5,
+    NUM_WORKERS: 8
+}

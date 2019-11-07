@@ -13,8 +13,7 @@ const Door = ({id, occupied, chosen, onClick}) => {
     )
 
     return (
-        // <div className={doorStyle} onClick={onClick}>{id}</div>
-        <div className={doorStyle}>{id}</div>
+        <div className={doorStyle} onClick={onClick}>{id}</div>
     )
 }
 

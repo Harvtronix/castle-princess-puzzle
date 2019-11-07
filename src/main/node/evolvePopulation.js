@@ -7,21 +7,30 @@ const evolvePopulation = () => {
     const rawData = fs.readFileSync('./files/population.json')
     const population = JSON.parse(rawData)
 
-    // Kill off worst half of population
-    population.cells = population.cells.slice(0, population.cells.length/2)
-
     const newCells = []
 
-    // Divide each cell into two new ones
-    for (let cell of population) {
-        const [cell1, cell2] = Genetics.divide(cell)
-        newCells.push(cell1, cell2)
+    for (let i=0; i<population.cells.length/2; i++) {
+        // randomly obtain 2 cells
+        let index1 = Math.floor(Math.random() * population.cells.length)
+        const index2 = Math.floor(Math.random() * population.cells.length)
+
+        const cell1 = population.cells[index1]
+        const cell2 = population.cells[index2]
+
+        // determine which one is more fit
+        const fitterCell = cell1.fitness < cell2.fitness ? cell1 : cell2
+
+        // allow that cell to divide
+        const [daughter1, daughter2] = Genetics.divide(fitterCell)
+
+        // put the daughter cells into the population
+        newCells.push(daughter1, daughter2)
     }
 
     // Increment generation value
     population.generation++
 
-    population.cells = newCells
+    population.cells = newCells.sort((a, b) => a.fitness - b.fitness)
 
     fs.writeFileSync('./files/population.json', JSON.stringify(population, null, 2))
 }

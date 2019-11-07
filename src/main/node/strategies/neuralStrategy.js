@@ -1,32 +1,3 @@
-const createSubFunction = () => {
-    return {
-        defaultGuess: 0,
-        lookAtGuess: 0,
-        map: {},
-    }
-}
-
-// Example cell
-const cell = {
-    defaultGuess: 0,
-    lookAtGuess: 0,
-    map: {
-        0: {
-            lookAtGuess: 1,
-            map: {
-                0: 3,
-                1: 2,
-                2: 1,
-                3: 0
-            },
-            defaultGuess: 0
-        },
-        1: 1,
-        2: 2,
-        3: 3
-    }
-}
-
 const doCellFunction = (subFunction, history) => {
     // Check for out of bounds lookAtGuess. If out of bounds, use default guess
     if (subFunction.lookAtGuess >= history.length) {
@@ -57,7 +28,4 @@ const neuralStrategy = (game, cell) => {
     return result
 }
 
-module.exports = {
-    neuralStrategy,
-    createSubFunction
-}
+module.exports = neuralStrategy

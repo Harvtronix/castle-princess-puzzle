@@ -1,7 +1,36 @@
 const v8 = require('v8')
 
-const {createSubFunction} = require('./strategies/neuralStrategy')
-const {NUM_ROOMS, MAX_GUESSES} = require('./Game')
+const Constants = require('./Constants')
+
+const createSubFunction = () => {
+    return {
+        defaultGuess: 0,
+        lookAtGuess: 0,
+        map: {},
+    }
+}
+
+/* Example cell
+const cell = {
+    defaultGuess: 0,
+    lookAtGuess: 0,
+    map: {
+        0: {
+            lookAtGuess: 1,
+            map: {
+                0: 3,
+                1: 2,
+                2: 1,
+                3: 0
+            },
+            defaultGuess: 0
+        },
+        1: 1,
+        2: 2,
+        3: 3
+    }
+}
+*/
 
 const getSubFunctions = (cell) => {
     // Always at least one "root" subFunction
@@ -18,9 +47,7 @@ const getSubFunctions = (cell) => {
 }
 
 const shouldMutate = () => {
-    const rarity = 2
-
-    return Math.floor(Math.random() * 100) < rarity
+    return Math.floor(Math.random() * 100) < Constants.MUTATION_RATE
 }
 
 const mutate = (cell) => {
@@ -42,10 +69,10 @@ const mutateAddOutput = (cell) => {
     ]
 
     // Select a random room key under which the output will go
-    const roomKey = Math.floor(Math.random() * NUM_ROOMS)
+    const roomKey = Math.floor(Math.random() * Constants.NUM_ROOMS)
 
     // Select a random output value
-    const outputVal = Math.floor(Math.random() * NUM_ROOMS)
+    const outputVal = Math.floor(Math.random() * Constants.NUM_ROOMS)
 
     // Add the output value to the selected subFunction's map
     selectedSubFunction.map[roomKey] = outputVal
@@ -61,43 +88,10 @@ const mutateAddSubFunction = (cell) => {
     ]
 
     // Select a random room key under which the new subFunction will go
-    const roomKey = Math.floor(Math.random() * NUM_ROOMS)
+    const roomKey = Math.floor(Math.random() * Constants.NUM_ROOMS)
 
-    // Select a random lookAtGuess value for the subFunction
-    const lookAtGuess = Math.floor(Math.random() * MAX_GUESSES)
-
-    // Create a new subFunction
-    const newSubFunction = createSubFunction(lookAtGuess)
-
-    // Add the subFunction to the selected subFunction's map
-    selectedSubFunction.map[roomKey] = newSubFunction
-}
-
-const mutateRemoveMapping = (cell) => {
-    // Compile all subFunctions
-    const allSubFunctions = getSubFunctions(cell)
-
-    // Get only subFunctions with removable things
-    const filteredSubFunctions = allSubFunctions.filter((val) => {
-        return Object.keys(val.map).length !== 0
-    })
-
-    if (filteredSubFunctions.length === 0) {
-        // No subFunctions have things that can be removed
-        return
-    }
-
-    // Select a subFunction from the set
-    const selectedSubFunction = filteredSubFunctions[
-        Math.floor(Math.random() * filteredSubFunctions.length)
-    ]
-
-    // Select a random map key from which to remove the output/subFunction
-    const keysIndex = Math.floor(Math.random() * Object.keys(selectedSubFunction.map).length)
-    const roomIndex = Object.keys(selectedSubFunction.map)[keysIndex]
-
-    // Remove the key from the map
-    delete selectedSubFunction.map[roomIndex]
+    // Create a sunFunction and add it to the selected subFunction's map
+    selectedSubFunction.map[roomKey] = createSubFunction()
 }
 
 const mutateChangeLookAtGuess = (cell) => {
@@ -110,7 +104,7 @@ const mutateChangeLookAtGuess = (cell) => {
     ]
 
     // Select a new lookAtGuess value
-    const newLookAtGuess = Math.floor(Math.random() * MAX_GUESSES)
+    const newLookAtGuess = Math.floor(Math.random() * Constants.MAX_GUESSES)
 
     // Set the subFunction's lookAtGuess to be the new lookAtGuess
     selectedSubFunction.lookAtGuess = newLookAtGuess
@@ -126,19 +120,11 @@ const mutateChangeDefaultGuess = (cell) => {
     ]
 
     // Select a new defaultGuess value
-    const newDefaultGuess = Math.floor(Math.random() * NUM_ROOMS)
+    const newDefaultGuess = Math.floor(Math.random() * Constants.NUM_ROOMS)
 
     // Set the subFunction's lookAtGuess to be the new lookAtGuess
     selectedSubFunction.defaultGuess = newDefaultGuess
 }
-
-const MUTATIONS = Object.freeze({
-    // ADD_OUTPUT: mutateAddOutput,
-    ADD_SUB_FUNCTION: mutateAddSubFunction,
-    // REMOVE_MAPPING: mutateRemoveMapping,
-    CHANGE_LOOK_AT_GUESS: mutateChangeLookAtGuess,
-    CHANGE_DEFAULT_GUESS: mutateChangeDefaultGuess
-})
 
 const createCells = (numCells) => {
     const population = []
@@ -162,26 +148,23 @@ const divide = (cell) => {
 
     // check if we should mutate cell1
     if (shouldMutate()) {
-        // console.log('\nMutating cell1')
-        // console.log('Before:')
-        // console.log(JSON.stringify(cell1, null, 2))
         mutate(cell1)
-        // console.log('After:')
-        // console.log(JSON.stringify(cell1, null, 2))
     }
 
     // check if we should mutate cell2
     if (shouldMutate()) {
-        // console.log('\nMutating cell2')
-        // console.log('Before:')
-        // console.log(JSON.stringify(cell2, null, 2))
         mutate(cell2)
-        // console.log('After:')
-        // console.log(JSON.stringify(cell2, null, 2))
     }
 
     return [cell1, cell2]
 }
+
+const MUTATIONS = Object.freeze({
+    ADD_OUTPUT: mutateAddOutput,
+    ADD_SUB_FUNCTION: mutateAddSubFunction,
+    CHANGE_LOOK_AT_GUESS: mutateChangeLookAtGuess,
+    CHANGE_DEFAULT_GUESS: mutateChangeDefaultGuess
+})
 
 module.exports = {
     createCells,
