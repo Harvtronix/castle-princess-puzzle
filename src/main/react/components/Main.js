@@ -9,7 +9,7 @@ import AI from '../modules/AI'
 
 const initialState = {
     previousChoices: [],
-    doorStates: [false, false, false, false, false],
+    doorStates: [false, false, false, false],
     won: false,
     fitnessValues: []
 }

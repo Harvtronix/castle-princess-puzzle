@@ -4,8 +4,8 @@ const Constants = require('./Constants')
 
 const createSubFunction = () => {
     return {
-        defaultGuess: 0,
-        lookAtGuess: 0,
+        defaultGuess: Math.floor(Math.random() * Constants.NUM_ROOMS),
+        lookAtGuess: Math.floor(Math.random() * Constants.MAX_GUESSES),
         map: {},
     }
 }
@@ -16,18 +16,10 @@ const cell = {
     lookAtGuess: 0,
     map: {
         0: {
-            lookAtGuess: 1,
-            map: {
-                0: 3,
-                1: 2,
-                2: 1,
-                3: 0
-            },
             defaultGuess: 0
-        },
-        1: 1,
-        2: 2,
-        3: 3
+            lookAtGuess: 1,
+            map: {},
+        }
     }
 }
 */
@@ -59,24 +51,24 @@ const mutate = (cell) => {
     MUTATIONS[mutation](cell)
 }
 
-const mutateAddOutput = (cell) => {
-    // Compile all subFunctions
-    const allSubFunctions = getSubFunctions(cell)
+// const mutateAddOutput = (cell) => {
+//     // Compile all subFunctions
+//     const allSubFunctions = getSubFunctions(cell)
 
-    // Select a subFunction from the set
-    const selectedSubFunction = allSubFunctions[
-        Math.floor(Math.random() * allSubFunctions.length)
-    ]
+//     // Select a subFunction from the set
+//     const selectedSubFunction = allSubFunctions[
+//         Math.floor(Math.random() * allSubFunctions.length)
+//     ]
 
-    // Select a random room key under which the output will go
-    const roomKey = Math.floor(Math.random() * Constants.NUM_ROOMS)
+//     // Select a random room key under which the output will go
+//     const roomKey = Math.floor(Math.random() * Constants.NUM_ROOMS)
 
-    // Select a random output value
-    const outputVal = Math.floor(Math.random() * Constants.NUM_ROOMS)
+//     // Select a random output value
+//     const outputVal = Math.floor(Math.random() * Constants.NUM_ROOMS)
 
-    // Add the output value to the selected subFunction's map
-    selectedSubFunction.map[roomKey] = outputVal
-}
+//     // Add the output value to the selected subFunction's map
+//     selectedSubFunction.map[roomKey] = outputVal
+// }
 
 const mutateAddSubFunction = (cell) => {
     // Compile all subFunctions
@@ -160,7 +152,7 @@ const divide = (cell) => {
 }
 
 const MUTATIONS = Object.freeze({
-    ADD_OUTPUT: mutateAddOutput,
+    // ADD_OUTPUT: mutateAddOutput,
     ADD_SUB_FUNCTION: mutateAddSubFunction,
     CHANGE_LOOK_AT_GUESS: mutateChangeLookAtGuess,
     CHANGE_DEFAULT_GUESS: mutateChangeDefaultGuess

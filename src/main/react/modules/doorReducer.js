@@ -60,6 +60,7 @@ const chooseDoor = (state, {choice, log}) => {
 
     if (currentlyOccupiedDoor === choice) {
         log('Game ended after ' + state.previousChoices.length + ' guesses')
+        alert('you won')
         state.won = true
 
         const fitness = MAX_ROUNDS - state.previousChoices.length
