@@ -25,7 +25,11 @@ const runSimulation = async () => {
                 if ('done' in data) {
                     resolve(data)
                 } else {
-                    population.cells[data.index].fitness = data.fitness
+                    population.cells[data.index] = {
+                        ...population.cells[data.index],
+                        ...data
+                    }
+                    delete population.cells[data.index].index // index is irrelevant in result data
                 }
             })
         })
@@ -50,10 +54,13 @@ const runSimulation = async () => {
 
     await Promise.all(promises)
 
-    population.cells = population.cells.sort((a, b) => a.fitness - b.fitness)
+    population.cells = population.cells.sort((a, b) => b.fitness - a.fitness)
 
     // Write out the sorted population to the file
     fs.writeFileSync('./files/population.json', JSON.stringify(population, null, 2))
+
+    // Write out duplicate version always showing last simulation results
+    fs.writeFileSync('./files/last-results.json', JSON.stringify(population, null, 2))
 }
 
 module.exports = runSimulation

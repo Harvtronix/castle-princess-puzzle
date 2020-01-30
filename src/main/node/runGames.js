@@ -4,9 +4,9 @@ const Constants = require('./Constants')
 const Game = require('./Game')
 const neuralStrategy = require('./strategies/neuralStrategy')
 
-// Increase this value to make the sucess percent matter more in the fitness
-const SUCCESS_PERCENT_FACTOR = 5
-
+/**
+ * Higher fitness is better.
+ */
 const calculateFitness = (results) => {
     // Fitness: Percentage of time a solution is found combined with the average number of
     // guesses it takes to find a solution
@@ -19,8 +19,16 @@ const calculateFitness = (results) => {
     const successPercent = numSuccesses / results.length
 
     const averageGuesses = results.reduce((prev, cur) => (prev + cur)) / results.length
+    const percentUnusedGuesses = (Constants.MAX_GUESSES - averageGuesses) / Constants.MAX_GUESSES
 
-    return (Math.pow((1 / successPercent), SUCCESS_PERCENT_FACTOR) * averageGuesses)
+    return {
+        fitness: (
+            (successPercent * Constants.SUCCESS_PERCENT_FACTOR) +
+            percentUnusedGuesses
+        ),
+        successPercent,
+        averageGuesses
+    }
 }
 
 const runGames = (msg) => {
@@ -37,9 +45,9 @@ const runGames = (msg) => {
         results.push(g.guesses.length)
     }
 
-    const fitness = calculateFitness(results)
+    const fitnessResults = calculateFitness(results)
 
-    parentPort.postMessage({index, fitness})
+    parentPort.postMessage({index, ...fitnessResults})
 }
 
 parentPort.on('message', (msg) => {
